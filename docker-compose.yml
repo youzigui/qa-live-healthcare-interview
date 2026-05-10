@@ -1,0 +1,38 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: qa-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: qa_db
+      MYSQL_USER: qa_user
+      MYSQL_PASSWORD: qa_password
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --init-connect='SET NAMES utf8mb4'
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - qa-network
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: qa-phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: qa_user
+      PMA_PASSWORD: qa_password
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+    networks:
+      - qa-network
+
+volumes:
+  mysql-data:
+
+networks:
+  qa-network:
+    driver: bridge

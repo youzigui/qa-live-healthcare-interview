@@ -48,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { store, Doctor } from '../store';
 
@@ -59,6 +59,10 @@ const allDoctors = computed(() => store.state.doctors);
 const goToConsultation = (doctor: Doctor) => {
   router.push(`/consultation/${doctor.username}`);
 };
+
+onMounted(async () => {
+  await store.loadDoctorsFromAPI();
+});
 </script>
 
 <style scoped>
